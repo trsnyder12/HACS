@@ -1,0 +1,121 @@
+body, html {
+    height: 100%;
+    background-color: #707070;
+}
+
+body {
+    overflow: hidden;
+}
+
+#top-bar {
+    background-color: #ffc15e;
+}
+
+#base {
+    height: 100%;
+}
+
+#left-bar {
+    background-color: #f7f7f7;
+    padding: 0px;
+}
+
+/* side bar buttons */
+.left-button{
+    padding: 0px;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+    font-size : 2em;
+    font-weight: 300;
+    color: #7f7f7f;
+    background: #e5e5e5;
+    padding: 10%;
+}
+
+.info {
+    text-align: center;
+    color: darkgray;
+    margin-top: 225%;
+}
+
+.bannerpic {
+    width: 102%;
+    margin-left: -15px;
+}
+
+/* The modal */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 72px;
+    font-weight: bold;
+    margin-right: 30%;
+    margin-top: 5%;
+}
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* login form */
+.login-page {
+    width: 360px;
+    padding: 8% 0 0;
+    margin: auto;
+}
+.form {
+    position: relative;
+    z-index: 1;
+    background: #FFFFFF;
+    max-width: 360px;
+    margin: 0 auto 100px;
+    padding: 45px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+.form input {
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+.form button {
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    background: #ffc15e;
+    width: 100%;
+    border: 0;
+    padding: 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
+}
+.form button:hover,.form button:active,.form button:focus {
+    background: #efb65b;
+}
