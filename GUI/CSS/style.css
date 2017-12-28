@@ -26,11 +26,12 @@ body {
     border: none;
     width: 100%;
     cursor: pointer;
-    font-size : 2em;
+    font-size : 1.5em;
     font-weight: 300;
     color: #7f7f7f;
     background: #e5e5e5;
     padding: 10%;
+    margin-top: 5%;
 }
 
 .info {
@@ -43,6 +44,24 @@ body {
     width: 102%;
     margin-left: -15px;
 }
+
+.page-top {
+    height: 12%;
+    width: 102%;
+    margin-left: -15px;
+    background-color: #ccc;
+}
+
+.page-top-title {
+    font-size: 3em;
+    padding: 1%;
+    color: #fff;
+    margin-left: 1%;
+}
+
+
+
+
 
 /* The modal */
 .modal {
