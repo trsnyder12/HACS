@@ -476,3 +476,7 @@ footer.sticky-footer {
     width: calc(100% - 55px);
   }
 }
+
+.table-btn {
+    width: 100%;
+}
