@@ -15,10 +15,10 @@ def get_example(id):
     ex = id
     return jsonify({'example': ex})
 
-@app.route('/users', methods=['GET'])
+@app.route('/users/<String:username>', methods=['GET'])
 def get_user(username):
-    wantedUser = firebase.get('/users/' + username,None)
-    return jsonify({'user':wantedUser})
+    wanteduser = firebase.get('/users/' + username,None)
+    return jsonify({'user':wanteduser})
 
 @app.route('/users',methods=['PUT'])
 def put_user_attribute(attributeName,attribute):
