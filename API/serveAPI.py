@@ -10,13 +10,17 @@ print (result)
 
 
 app = Flask(__name__)
-app.config['MQTT_BROKER_URL'] = '192.168.1.22'  # use the free broker from HIVEMQ
+app.config['MQTT_BROKER_URL'] = '192.168.1.22' 
 app.config['MQTT_BROKER_PORT'] = 1883
-app.config['MQTT_KEEPALIVE'] = 5  # set the time interval for sending a ping to the broker to 5 seconds
+app.config['MQTT_KEEPALIVE'] = 5  
 app.config['MQTT_TLS_ENABLED'] = False
 
 mqtt = Mqtt(app)
-mqtt.subscribe('/devices/esp8266_6E36FB/events')
+
+fs = open("sensor.txt")
+sensors = fs.read();
+for i in sensors:
+    mqtt.subscribe('/devices/'+i+'/events')
 
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
