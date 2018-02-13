@@ -1,13 +1,46 @@
 #where the flask API is going to go
 
 from flask import Flask, jsonify
+from firebase import firebase
+from flask_mqtt import Mqtt
+
+firebase = firebase.FirebaseApplication('https://hacs-9caa0.firebaseio.com/')
+result = firebase.get('/users',None)
+print (result)
+
 
 app = Flask(__name__)
+app.config['MQTT_BROKER_URL'] = '192.168.1.22'  # use the free broker from HIVEMQ
+app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_KEEPALIVE'] = 5  # set the time interval for sending a ping to the broker to 5 seconds
+app.config['MQTT_TLS_ENABLED'] = False
+
+mqtt = Mqtt(app)
+mqtt.subscribe('/devices/esp8266_6E36FB/events')
+
+@mqtt.on_message()
+def handle_mqtt_message(client, userdata, message):
+    data = dict(
+        topic=message.topic,
+        payload=message.payload.decode()
+    )
+    print(data)
 
 @app.route('/<int:id>', methods=['GET'])
 def get_example(id):
     ex = id
     return jsonify({'example': ex})
+
+@app.route('/users/<string:username>', methods=['GET'])
+def get_user(username):
+    wanteduser = firebase.get('/users/' + username,None)
+    return jsonify({'user':wanteduser})
+
+@app.route('/users',methods=['PUT'])
+def put_user_attribute(attributeName,attribute):
+    response = firebase.put('/users/'+ attributeName,'value',attribute )
+    print(response)
+    return jsonify({'attribute':response})
 
 if __name__ == '__main__':
     app.run(debug=True)
