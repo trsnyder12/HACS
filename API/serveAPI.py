@@ -40,7 +40,7 @@ def get_user(username):
     wanteduser = firebase.get('/users/' + username,None)
     return jsonify({'user':wanteduser})
 
-@app.route('/users',methods=['GET'])
+@app.route('/users/',methods=['GET'])
 def get_users():
     users = firebase.get('/users',None)
     return jsonify({'user':users})
