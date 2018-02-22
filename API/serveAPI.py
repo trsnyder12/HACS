@@ -40,7 +40,7 @@ def get_user(username):
     wanteduser = firebase.get('/users/' + username,None)
     return jsonify({'user':wanteduser})
 
-@app.route('/users/<string:userId>/<string:username>',methods=['PUT'])
+@app.route('/users/<string:userId>/<string:username>',methods=['POST'])
 def create_user(userId,username):
     response = firebase.post('/users/'+ userId,'value',username )
     print(response)
