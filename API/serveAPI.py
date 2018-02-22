@@ -40,11 +40,15 @@ def get_user(username):
     wanteduser = firebase.get('/users/' + username,None)
     return jsonify({'user':wanteduser})
 
-@app.route('/users',methods=['PUT'])
-def put_user_attribute(attributeName,attribute):
-    response = firebase.put('/users/'+ attributeName,'value',attribute )
+@app.route('/users/<string:userId>/<string:username>',methods=['PUT'])
+def create_user(userId,username):
+    response = firebase.post('/users/'+ userId,'value',username )
     print(response)
     return jsonify({'attribute':response})
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
