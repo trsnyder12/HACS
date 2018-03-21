@@ -1,0 +1,12 @@
+{
+	  "type": "service_account",
+	    "project_id": "seniordesign-198318",
+	      "private_key_id": "5ac69c89a74c04ac1699d1fa4bf7d13eeffe4587",
+	        "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCVD686ffzZTikM\niqtEefuyehQE5Sxiznj9U3uLTKCb5YStD0uBI9d2HN+5I0PMjHSax5GWQXSI7FLt\n2tjDHUFq8nesgot21z+iBU3tle2l+ja3L9DOkKyYrZfs6i8H3yWzg5l7cgXmixqM\nLOtEXS5xtPHgPAaWWF6uagqgLn4YIqWuDSawBwMEl7v39qI5a0NnlyNatjfEk3hZ\nJNJlTc54EPXHAOSZOfM16pnWwTItBmX7S8rcxwNBbQrpfUzZJecQ3NV9utBo5Eil\nOZe3hm4R0k7ZclNrB+ujol3VLWI0yIbMtIA6/G6BhH1ujdOxNdIVgPkJLRwsVZN3\nIUIyw7c3AgMBAAECggEAANDWff91LstFYOgxX8KQehLo9niP8Z/SUbCZ8H05iSDh\nxQCxwmyBIAhbFmxMUVuYwnAX1TaufewCgtgRGkrtXLnO+zFhCgQg47DGaGfK+9Q5\nZcSWjqAuvEyBlFkDwOCbwuEUKfTJy3qKE/z68fjV6ZFlRtDina1bd0uP8Kh7JYP+\nOKZa4NU9r4xY7VPeZTyhzp104DcT4ndbqOJUa9tIv+EPIh9xt/v0+oI6n2bB0LgW\nqHqPxZj7GbTY91/NHBohTqZThEgAHPQxV2gbzZ+KvOwotYvUFT0ySRkAflMQ3wQ0\nZkWFhk8s0M5QW5Xv6yjZKa8TIsRUttUJmOx9M72GAQKBgQDHRdxLl94sNPwb5vJy\nZ003Yqb72N+6NmFMvY4P4DZgyvez3Esu7RZJDKP2FQ8iFrvRSCdEfniWCZ/a0UC+\nhPAVIcjthN0/c7a8QfP01upw/q12BJADbgb9ciUicgpBDSeIYULNUF5B3lmcUwh7\nsOaUD5tn/HvZUAJDatGNGBLi9wKBgQC/fp6iktcZ0QMEsy81sYDAbD6OC90UuJwx\nJRz3NGjW9RYn2phSJ5zKqV2fvOdwlHTmI4Vqp//kKZBGxsvpwjH1inZJFcKjT15Z\nSIq4ez9rIyhw1XO1DiwYVTWsKlny8J2aoUUdn+NRxCVKVso30C20IF+/UZfvtfW9\n/nNOKOx9wQKBgQCM3mT6B1Tm2Vnze5Ker0oVwiabWNfnsnOcJVAdBvpJ+JGc0zlO\n5glgAJCT8JUvGvUQ4DnqIKGsJwebT1u+kwmJVsXMqqUhKvLeKJ2F0rwOvuruyBDq\na8iDOELqE8YN8Hem4GKx84N+eunMKaKQliCaQGIy43jFydqfwA58+Ky5RwKBgQCz\nwdiII+9nfJyovMuES6vg9buC+//8g4+bUotuQvRnVIoHv1tdQ3IbjAEnAd0AAVv6\n7T1AcZP0Sk/1IIgqVvEu3VtMH/El/EtE5KPTqV5O5CICSVzkiPk7nkFT7C2jr9tC\nXEDVHlH1X3rh3bbVzcYZYIqAvccybkzQnRsAM8pMAQKBgQCn0vKAU+GyYOIqgTDQ\n240K9XYA8kmhy/bHEf8PzOiemk3OPw1DDIdMWN6LUlq4QewBTFjzfm0JEtcQ57wX\nzg8/OZP2ZXS1Crm1RrqnXnzmxwu8gaz834I87MDeCtFH79gt/4inxaFMFw2SGL8q\ntcbh+POBD4X4iDLRI5BlED/J/Q==\n-----END PRIVATE KEY-----\n",
+		  "client_email": "gtgaito@seniordesign-198318.iam.gserviceaccount.com",
+		    "client_id": "106746133992411198694",
+		      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+		        "token_uri": "https://accounts.google.com/o/oauth2/token",
+			  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+			    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gtgaito%40seniordesign-198318.iam.gserviceaccount.com"
+}

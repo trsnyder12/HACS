@@ -3,14 +3,26 @@
 from flask import Flask, jsonify
 from firebase import firebase
 from flask_mqtt import Mqtt
+import json
+from pyrebase import pyrebase
+import datetime
+import uuid
 
+config = {
+    "apiKey": "AIzaSyAt1m7mt1XAT_Ppe_skwsvheWp7m4sf25E",
+    "authDomain": "hacs-9caa0.firebaseapp.com",
+    "databaseURL": "https://hacs-9caa0.firebaseio.com",
+    "storageBucket": "hacs-9caa0.appspot.com",
+}
+firebase2 = pyrebase.initialize_app(config)
+db = firebase2.database()
 firebase = firebase.FirebaseApplication('https://hacs-9caa0.firebaseio.com/')
 result = firebase.get('/users',None)
 print (result)
 
 
 app = Flask(__name__)
-app.config['MQTT_BROKER_URL'] = '192.168.1.22'
+app.config['MQTT_BROKER_URL'] = 'mqtt.bartrug.me'
 app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_KEEPALIVE'] = 5
 app.config['MQTT_TLS_ENABLED'] = False
@@ -19,16 +31,30 @@ mqtt = Mqtt(app)
 
 fs = open("sensors.txt")
 sensors = fs.read();
-for i in sensors:
+for i in sensors.split('\n'):
     mqtt.subscribe('/devices/'+i+'/events')
-
+    print(i)
+    print("subscribed")
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
     data = dict(
         topic=message.topic,
         payload=message.payload.decode()
     )
-    print(data)
+    astring = data['topic']
+    bstring = astring.split('/')
+    eventId = uuid.uuid4()
+    date = datetime.datetime.now().strftime("%B%d%Y")
+    time = datetime.datetime.now().strftime("%I:%M%p")
+    data_to_firebase = {"date":date,"time":time,"values":data['payload']}
+    #db.child("events").child(bstring[2]).push(data_to_firebase)
+
+#date should be "Month ##, ####"
+@app.route('/events-get-date/<string:date>',methods=['GET'])
+def get_event_by_date(date):
+    event_date = date
+    event_by_date = db.child("users").order_by_child("name").equal_to(event_date).get()
+    return jsonify(event_by_date)
 
 @app.route('/<int:id>', methods=['GET'])
 def get_example(id):
@@ -63,12 +89,10 @@ def put_user(user_json):
     control = attributes[4]
     phone = attributes[5]
     username = attributes[6]
-    result = firebase.put('users/' + user,'name',name)
-    result = firebase.put('users/' + user,'email',email)
-    result = firebase.put('users/' + user + '/permissions','camera',camera)
-    result = firebase.put('users/' + user + '/permissions','control',control)
-    result = firebase.put('users/' + user,'phone',phone)
-    result = firebase.put('users/' + user,'username',username)
+    data = {"name":name,"email":email,"phone":phone,"username":username}
+    db.child("users").child(user).set(data)
+    permissions = {"camera":camera,"control":control}
+    db.child("users").child(user).child("permissions").set(permissions)
     return jsonify({'userId':user})
 
 
@@ -78,18 +102,7 @@ def put_user_attribute(attribute_json):
     attributes = attribute_json.split('-')
     a = attributes[1]
     user = attributes[0]
-    if a == 'name':
-        result = firebase.put('users/' + user,'name',attributes[2])
-    elif a == 'email':
-        result = firebase.put('users/' + user,'email',attributes[2])
-    elif a == 'camera':
-        result = firebase.put('users/' + user + '/permissions','camera',attributes[2])
-    elif a == 'control':
-        result = firebase.put('users/' + user + '/permissions','control',attributes[2])
-    elif a == 'phone':
-        result = firebase.put('users/' + user,'phone',attributes[2])
-    elif a == 'username':
-        result = firebase.put('users/' + user,'username',attributes[2])
+    db.child("users").child(user).update({a:attributes[2]})
     return jsonify({'userid': user,'attribute name':attributes[1],'attribute':attributes[2]})
 
 # String order should be deviceId-attributes-location-nickname-type
@@ -103,18 +116,20 @@ def put_device(device_json):
     location = attrs[2]
     nickname = attrs[3]
     type_device = attrs[4]
-    result = firebase.put('devices/' + deviceId,'attributes',attributes)
-    result = firebase.put('devices/' + deviceId,'location',location)
-    result = firebase.put('devices/' + deviceId,'nickname',nickname)
-    result = firebase.put('devices/' + deviceId,'type',type_device)
+    data = {"attributes":attributes,"location":location,"nickname":nickname,"type":type_device}
+    db.child("devices").child(deviceId).set(data)
     return jsonify({'deviceId':deviceId})
 
+@app.route('/delete-device/<string:device_name>')
+def delete_device(device_name):
+    device = device_name
+    db.child("devices").child(device).remove()
+    return jsonify(result)
 
-
-@app.route('/delete/<string:user_name>')
+@app.route('/delete-user/<string:user_name>')
 def delete_user(user_name):
     user = user_name
-    result = firebase.delete('/users',user)
+    db.child("users").child(user).remove()
     return jsonify(result)
     
 
