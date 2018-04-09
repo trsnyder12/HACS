@@ -7,6 +7,7 @@ import json
 from pyrebase import pyrebase
 import datetime
 import uuid
+import re
 
 config = {
     "apiKey": "AIzaSyAt1m7mt1XAT_Ppe_skwsvheWp7m4sf25E",
@@ -16,9 +17,6 @@ config = {
 }
 firebase2 = pyrebase.initialize_app(config)
 db = firebase2.database()
-firebase = firebase.FirebaseApplication('https://hacs-9caa0.firebaseio.com/')
-result = firebase.get('/users',None)
-print (result)
 
 
 app = Flask(__name__)
@@ -35,6 +33,7 @@ for i in sensors.split('\n'):
     mqtt.subscribe('/devices/'+i+'/events')
     print(i)
     print("subscribed")
+
 @mqtt.on_message()
 def handle_mqtt_message(client, userdata, message):
     data = dict(
@@ -45,37 +44,60 @@ def handle_mqtt_message(client, userdata, message):
     bstring = astring.split('/')
     eventId = uuid.uuid4()
     date = datetime.datetime.now().strftime("%B%d%Y")
+    event_date = re.split('(\d+)',date)
     time = datetime.datetime.now().strftime("%I:%M%p")
-    data_to_firebase = {"date":date,"time":time,"values":data['payload']}
-    #db.child("events").child(bstring[2]).push(data_to_firebase)
+    data_to_firebase = {"values":data['payload']}
+    #db.child("events").child(bstring[2]).child(event_date[0]).child(event_date[1]).child(time).set(data_to_firebase)
+    #db.child("devices").child(bstring[2]).child("currentData").set(data_to_firebase)
 
-#date should be "Month ##, ####"
-@app.route('/events-get-date/<string:date>',methods=['GET'])
-def get_event_by_date(date):
-    event_date = date
-    event_by_date = db.child("users").order_by_child("name").equal_to(event_date).get()
-    return jsonify(event_by_date)
+# sample url 'api.bartrug.me/get-events-by-date/"'device'-'Month'ddyyyy"'
+@app.route('/get-events-by-date/<string:device_date>',methods=['GET'])
+def get_event_by_date(device_date):
+    astring = device_date.split('-')
+    device = astring[0]
+    event_date = re.split('(\d+)',astring[1])
 
-@app.route('/<int:id>', methods=['GET'])
-def get_example(id):
-    ex = id
-    return jsonify({'example': ex})
+    event_by_date = db.child("events").child(device).child(event_date[0]).child(event_date[1]).get()
+    return jsonify(event_by_date.val())
 
+
+#url should be "'device'-'Month'"
+#returns json of each day collected in the desired month. Each day has every event inside of it based off of the time
+@app.route('/get-events-for-month/<string:device_month>',methods=['GET'])
+def get_events_by_month(device_month):
+    astring = device_month.split('-')
+    device = astring[0]
+    event_month = astring[1]
+    event_by_month = db.child("events").child(device).child(event_month).get()
+    return jsonify(event_by_month.val())
+
+
+# sample url 'api.bartrug.me/users/"username"'
 @app.route('/users/<string:username>', methods=['GET'])
 def get_user(username):
-    wanteduser = firebase.get('/users/' + username,None)
-    return jsonify({'user':wanteduser})
+    wanteduser = db.child("users").child(username).get()
+    return jsonify({'user':wanteduser.val()})
 
+# sample url 'api.bartrug.me/users/'
 @app.route('/users/',methods=['GET'])
 def get_users():
-    users = firebase.get('/users/',None)
-    return jsonify({'user':users})
+    users = db.child("users").get()
+    return jsonify({'users':users.val()})
+
+
 if __name__ == '__main__':
     app.run(debug=True)
+
+# sample url 'api.bartrug.me/devices-get-currData/"device_name"'
+@app.route('/devices-get-currData/<string:device_name>',methods=['GET'])
+def get_device_attribute(device_name):
+    device = db.child("devices").child(device_name).child("currentData").get()
+    return jsonify({'DeviceData':device.val()})
 
 # When entering a user in the system make the url string have
 # attributes be seperated by '-'.
 # Order for post is userid-email-name-camera-control-phone-username
+# sample url 'api.bartrug.me/post-user/"userid-email-name-camera-control-phone-username"'
 
 @app.route('/post-user/<string:user_json>')
 def put_user(user_json):
@@ -97,6 +119,7 @@ def put_user(user_json):
 
 
 #string should be 'userid-attribute_name-attribute_data'
+#sample url 'api.bartrug.me/post-user-attributes/"userid-attribute_name-attribute_data"'
 @app.route('/post-user-attribute/<string:attribute_json>')
 def put_user_attribute(attribute_json):
     attributes = attribute_json.split('-')
@@ -105,7 +128,15 @@ def put_user_attribute(attribute_json):
     db.child("users").child(user).update({a:attributes[2]})
     return jsonify({'userid': user,'attribute name':attributes[1],'attribute':attributes[2]})
 
+
+# url call should be as follows 'api.bartrug.me/get-device/"devicename"'
+@app.route('/get-device/<string:device_name>', methods=['GET'])
+def get_device(device_name):
+    device = db.child('devices').child(device_name).get()
+    return jsonify(device.val())
+
 # String order should be deviceId-attributes-location-nickname-type
+# Sample url 'api.bartrug.me/post-device/"deviceId-attributes-location-nickname-type"'
 @app.route('/post-device/<string:device_json>')
 def put_device(device_json):
     attrs = device_json.split('-')
@@ -116,16 +147,18 @@ def put_device(device_json):
     location = attrs[2]
     nickname = attrs[3]
     type_device = attrs[4]
-    data = {"attributes":attributes,"location":location,"nickname":nickname,"type":type_device}
+    data = {"attributes":attributes,"location":location,"nickname":nickname,"type":type_device,"currentData":"null"}
     db.child("devices").child(deviceId).set(data)
     return jsonify({'deviceId':deviceId})
 
+# sample url 'api.bartrug.me/delete-device/"device_name"'
 @app.route('/delete-device/<string:device_name>')
 def delete_device(device_name):
     device = device_name
     db.child("devices").child(device).remove()
     return jsonify(result)
 
+# sample url 'api.bartrug.me/delete-user/"username"'
 @app.route('/delete-user/<string:user_name>')
 def delete_user(user_name):
     user = user_name
