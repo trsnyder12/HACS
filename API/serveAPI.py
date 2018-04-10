@@ -58,8 +58,9 @@ def get_event_by_date(device_date):
     event_date = re.split('(\d+)',astring[1])
 
     event_by_date = db.child("events").child(device).child(event_date[0]).child(event_date[1]).get()
-    return jsonify(event_by_date.val())
-
+    response = jsonify(event_by_date.val())
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 #url should be "'device'-'Month'"
 #returns json of each day collected in the desired month. Each day has every event inside of it based off of the time
@@ -69,21 +70,25 @@ def get_events_by_month(device_month):
     device = astring[0]
     event_month = astring[1]
     event_by_month = db.child("events").child(device).child(event_month).get()
-    return jsonify(event_by_month.val())
-
+    response = jsonify(event_by_month.val())
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # sample url 'api.bartrug.me/users/"username"'
 @app.route('/users/<string:username>', methods=['GET'])
 def get_user(username):
     wanteduser = db.child("users").child(username).get()
-    return jsonify({'user':wanteduser.val()})
-
+    respone = jsonify({'user':wanteduser.val()})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+    
 # sample url 'api.bartrug.me/users/'
 @app.route('/users/',methods=['GET'])
 def get_users():
     users = db.child("users").get()
-    return jsonify({'users':users.val()})
-
+    response =  jsonify({'users':users.val()})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -92,7 +97,9 @@ if __name__ == '__main__':
 @app.route('/devices-get-currData/<string:device_name>',methods=['GET'])
 def get_device_attribute(device_name):
     device = db.child("devices").child(device_name).child("currentData").get()
-    return jsonify({'DeviceData':device.val()})
+    response = jsonify({'DeviceData':device.val()})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # When entering a user in the system make the url string have
 # attributes be seperated by '-'.
@@ -115,8 +122,9 @@ def put_user(user_json):
     db.child("users").child(user).set(data)
     permissions = {"camera":camera,"control":control}
     db.child("users").child(user).child("permissions").set(permissions)
-    return jsonify({'userId':user})
-
+    response = jsonify({'userId':user})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 #string should be 'userid-attribute_name-attribute_data'
 #sample url 'api.bartrug.me/post-user-attributes/"userid-attribute_name-attribute_data"'
@@ -126,14 +134,17 @@ def put_user_attribute(attribute_json):
     a = attributes[1]
     user = attributes[0]
     db.child("users").child(user).update({a:attributes[2]})
-    return jsonify({'userid': user,'attribute name':attributes[1],'attribute':attributes[2]})
-
+    response = jsonify({'userid': user,'attribute name':attributes[1],'attribute':attributes[2]})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # url call should be as follows 'api.bartrug.me/get-device/"devicename"'
 @app.route('/get-device/<string:device_name>', methods=['GET'])
 def get_device(device_name):
     device = db.child('devices').child(device_name).get()
-    return jsonify(device.val())
+    response = jsonify(device.val())
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # String order should be deviceId-attributes-location-nickname-type
 # Sample url 'api.bartrug.me/post-device/"deviceId-attributes-location-nickname-type"'
@@ -149,21 +160,26 @@ def put_device(device_json):
     type_device = attrs[4]
     data = {"attributes":attributes,"location":location,"nickname":nickname,"type":type_device,"currentData":"null"}
     db.child("devices").child(deviceId).set(data)
-    return jsonify({'deviceId':deviceId})
+    response = jsonify({'deviceId':deviceId})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # sample url 'api.bartrug.me/delete-device/"device_name"'
 @app.route('/delete-device/<string:device_name>')
 def delete_device(device_name):
     device = device_name
     db.child("devices").child(device).remove()
-    return jsonify(result)
+    response = jsonify(result)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 # sample url 'api.bartrug.me/delete-user/"username"'
 @app.route('/delete-user/<string:user_name>')
 def delete_user(user_name):
     user = user_name
     db.child("users").child(user).remove()
-    return jsonify(result)
-    
+    response = jsonify(result)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response    
 
 

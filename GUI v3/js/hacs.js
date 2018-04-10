@@ -70,12 +70,12 @@ function getUsers()
 {
     var requestPath = 'users/';
     var requestURL = requestDomainName + requestPath;
-
+    console.log("testing");
     var r = new XMLHttpRequest();
     r.open('GET', requestURL);
     r.responseType = 'json';
     r.send();
-
+    console.log("got the stuff");
     r.onload = function() 
     {
         var users = r.response;
@@ -86,7 +86,7 @@ function getUsers()
             usernames.push(users.users[key].username);
         }
 
-        return usernames;
+        console.log( usernames);
         
     }
 
