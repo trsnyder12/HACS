@@ -86,7 +86,9 @@ def get_user(username):
 @app.route('/devices/',methods=['GET'])
 def get_devices():
     devices = db.child("devices").get()
-    return jsonify(devices.val())
+    response =  jsonify({'devices':devices.val()})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 # sample url 'api.bartrug.me/users/'
