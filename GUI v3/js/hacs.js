@@ -169,3 +169,25 @@ function deleteUser(username)
     var requestPath = 'delete-user/';
 
 }
+
+function getDevices() 
+{
+    var requestPath = 'devices/';
+    var requestURL = requestDomainName + requestPath;
+
+    var r = new XMLHttpRequest();
+    r.open('GET', requestURL);
+    r.responseType = 'json';
+    r.send();
+
+    r.onload = function() 
+    {
+        alert(1);
+    }
+
+    r.onerror = function() 
+    {
+        console.log('There was an error while processing getDevices()');
+    }
+
+}
