@@ -375,7 +375,7 @@ function getDevices()
             var txt = document.createTextNode(key);
 
             for (var i in devices.devices[key])
-            {
+            {   
                 if (typeof devices.devices[key][i] === "string")
                 {
                     td = document.createElement("td");
@@ -392,6 +392,54 @@ function getDevices()
             div.classList.add('btn');
             div.classList.add('btn-danger');
             div.classList.add('table-btn');
+            div.addEventListener('click', function(){ 
+                var alert = document.createElement("div");
+                alert.setAttribute("id", "alert");
+                var btnMessage = document.createElement("a");
+                var btnMessageNo = document.createElement("a");
+                var alertMessage = document.createTextNode("Are you sure you want to delete this device?");
+                var yes = document.createTextNode("Yes");
+                var no = document.createTextNode("No");
+
+
+                alert.classList.add("alert");
+                alert.classList.add("alert-danger");
+                btnMessage.classList.add("btn");
+                btnMessage.classList.add("btn-sm");
+                btnMessage.classList.add("btn-danger");
+                btnMessage.classList.add("pull-right");
+                btnMessage.classList.add("align-middle");
+                btnMessage.addEventListener('click', function(){
+                    var al = document.getElementById("alert");
+                    al.remove(); 
+                    //key is the name of device that
+                                 
+                })
+                btnMessage.appendChild(yes);
+                btnMessageNo.classList.add("btn");
+                btnMessageNo.classList.add("btn-sm");
+                btnMessageNo.classList.add("btn-danger");
+                btnMessageNo.classList.add("pull-right");
+                btnMessageNo.addEventListener('click', function(){
+                    var al = document.getElementById("alert");
+                    al.remove(); 
+                })
+                btnMessageNo.appendChild(no);
+
+                alert.appendChild(btnMessage);
+                alert.appendChild(btnMessageNo);
+                alert.appendChild(alertMessage);
+
+                var devCon = document.getElementById("devCon");
+
+                devCon.appendChild(alert);
+                /*
+                    <div class="alert alert-danger">
+                        <a href="#" class="btn btn-xs btn-danger pull-right">don't do an action</a>
+                        <strong>Danger:</strong> you shouldn't do an action!
+                    </div>
+                **/
+            });
             td = document.createElement("td");
             td.appendChild(div);
             tr.appendChild(td);
