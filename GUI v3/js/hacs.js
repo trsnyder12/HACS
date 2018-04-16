@@ -412,6 +412,18 @@ function getDevices()
                 btnMessage.addEventListener('click', function(){
                     var al = document.getElementById("alert");
                     al.remove(); 
+                    var tableHolder = document.getElementById("devInfo");
+                    tableHolder.innerHTML = '';
+
+                    var tr = document.createElement("tr");
+                    var td = document.createElement("td");
+                    tr.appendChild('');
+                    td.appendChild('');
+                    /*
+                    <tbody id="devInfo">
+                        <tr><td></td></tr>
+                    </tbody>
+                    */
                     //key is the name of device that
                                  
                 })
