@@ -80,8 +80,8 @@ function populateChart(deviceName, month, value, diction, time)
               }],
               yAxes: [{
                 ticks: {
-                  min: Math.min.apply(null, (diction[value])) - 10,
-                  max: Math.max.apply(null, (diction[value])) + 10,
+                  min: Math.min.apply(null, (diction[value])) - Math.sqrt(Math.min.apply(null,diction[value])),
+                  max: Math.max.apply(null, (diction[value])) + Math.sqrt(Math.max.apply(null,diction[value])),
                   maxTicksLimit: 5
                 },
                 gridLines: {
