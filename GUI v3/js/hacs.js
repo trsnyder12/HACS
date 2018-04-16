@@ -142,12 +142,83 @@ function getEventsByMonth(deviceName, month)
 
     r.onload = function() 
     {
-        data = r.response;
+        var data = r.response;
 
-        for (var key in data)
+        var time = [];
+        var temp = [];
+        var humi = [];
+
+        for (var obj in data)
         {
-            console.log(key);
+            for (var key in data[obj])
+            {
+
+                //console.log(key); // Times
+                var d = JSON.parse(data[obj][key].values);
+                //console.log(d.temp); // Temperature
+                //console.log(d.humidity); // Humidity
+                time.push(key);
+                temp.push(d.temp);
+                humi.push(d.humidity);
+            }
         }
+
+
+        console.log(time);
+        console.log(temp);
+        console.log(humi);
+        Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+        Chart.defaults.global.defaultFontColor = '#292b2c';
+
+        var ctx = document.getElementById("deviceChart");
+        var myLineChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: time,
+            datasets: [{
+              label: "Temperature",
+              lineTension: 0.3,
+              backgroundColor: "rgba(2,117,216,0.2)",
+              borderColor: "rgba(2,117,216,1)",
+              pointRadius: 5,
+              pointBackgroundColor: "rgba(2,117,216,1)",
+              pointBorderColor: "rgba(255,255,255,0.8)",
+              pointHoverRadius: 5,
+              pointHoverBackgroundColor: "rgba(2,117,216,1)",
+              pointHitRadius: 20,
+              pointBorderWidth: 2,
+              data: temp,
+            }],
+          },
+          options: {
+            scales: {
+              xAxes: [{
+                time: {
+                  unit: 'date'
+                },
+                gridLines: {
+                  display: false
+                },
+                ticks: {
+                  maxTicksLimit: 7
+                }
+              }],
+              yAxes: [{
+                ticks: {
+                  min: -10,
+                  max: 100,
+                  maxTicksLimit: 5
+                },
+                gridLines: {
+                  color: "rgba(0, 0, 0, .125)",
+                }
+              }],
+            },
+            legend: {
+              display: false
+            }
+          }
+        });
     }
 
     r.onerror = function() 
