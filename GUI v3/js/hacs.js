@@ -130,29 +130,33 @@ function getEventsByMonth(deviceName, month)
 
         for (var obj in data)
         {
-            for (var key in data[obj])
+            if (obj == '162018') 
             {
-                //console.log(key); // Times
-                var d = JSON.parse(data[obj][key].values);
-                //console.log(d.temp); // Temperature
-                //console.log(d.humidity); // Humidity
-                time.push(key);
-
-                //Object.keys(d)
-                values = Object.keys(d);
-
-                for (var i in values)
+                for (var key in data[obj])
                 {
-                    if (!(values[i] in diction))
+                    //console.log(key); // Times
+                    var d = JSON.parse(data[obj][key].values);
+                    //console.log(d.temp); // Temperature
+                    //console.log(d.humidity); // Humidity
+                    time.push(key);
+
+
+                    //Object.keys(d)
+                    values = Object.keys(d);
+
+                    for (var i in values)
                     {
-                        diction[values[i]] = [];
+                        if (!(values[i] in diction))
+                        {
+                            diction[values[i]] = [];
+                        }
+                        diction[values[i]].push(d[values[i]]);
                     }
-                    diction[values[i]].push(d[values[i]]);
+
+
+
                 }
-
-
-
-            }
+            }   
         }
 
 
