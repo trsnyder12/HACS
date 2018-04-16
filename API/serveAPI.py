@@ -43,9 +43,11 @@ def handle_mqtt_message(client, userdata, message):
     astring = data['topic']
     bstring = astring.split('/')
     eventId = uuid.uuid4()
+    from pytz import timezone
+    tz = timezone('EST') 
     date = datetime.datetime.now().strftime("%B%d%Y")
     event_date = re.split('(\d+)',date)
-    time = datetime.datetime.now().strftime("%I:%M%p")
+    time = datetime.datetime.now(tz).strftime("%I:%M%p")
     data_to_firebase = {"values":data['payload']}
     #db.child("events").child(bstring[2]).child(event_date[0]).child(event_date[1]).child(time).set(data_to_firebase)
     #db.child("devices").child(bstring[2]).child("currentData").set(data_to_firebase)
