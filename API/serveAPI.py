@@ -49,8 +49,16 @@ def handle_mqtt_message(client, userdata, message):
     event_date = re.split('(\d+)',date)
     time = datetime.datetime.now(tz).strftime("%I:%M%p")
     data_to_firebase = {"values":data['payload']}
+    send_data_to_fb(data_to_firebase,bstring[2])
     #db.child("events").child(bstring[2]).child(event_date[0]).child(event_date[1]).child(time).set(data_to_firebase)
-    #db.child("devices").child(bstring[2]).child("currentData").set(data_to_firebase)
+    
+
+#helper funciton for thresholds and data
+def send_data_to_fb(data_to_firebase,device):
+	threshold = db.child("devices").child(bstring[2]).child("threshold").get()
+	#db.child("devices").child(bstring[2]).child("currentData").set(data_to_firebase)
+
+
 
 # sample url 'api.bartrug.me/get-events-by-date/"'device'-'Month'ddyyyy"'
 @app.route('/get-events-by-date/<string:device_date>',methods=['GET'])
