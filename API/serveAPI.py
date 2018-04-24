@@ -49,15 +49,18 @@ def handle_mqtt_message(client, userdata, message):
     event_date = re.split('(\d+)',date)
     time = datetime.datetime.now(tz).strftime("%I:%M%p")
     data_to_firebase = {"values":data['payload']}
-    send_data_to_fb(data_to_firebase,bstring[2])
-    #db.child("events").child(bstring[2]).child(event_date[0]).child(event_date[1]).child(time).set(data_to_firebase)
+    send_data_to_fb(data_to_firebase,bstring[2],event_date[1],event_date[2])
     
 
 #helper funciton for thresholds and data
-def send_data_to_fb(data_to_firebase,device):
+def send_data_to_fb(data_to_firebase,device,month,day):
 	threshold = db.child("devices").child(bstring[2]).child("threshold").get()
-	#db.child("devices").child(bstring[2]).child("currentData").set(data_to_firebase)
-
+	new_data = data_to_firebase.split(':')
+	
+	if threshold>= new_data[1]:
+		db.child("devices").child(device).child("currentData").set(data_to_firebase)
+		db.child("events").child(device).child(month).child(day).child(time).set(data_to_firebase)
+    
 
 
 # sample url 'api.bartrug.me/get-events-by-date/"'device'-'Month'ddyyyy"'
@@ -166,18 +169,18 @@ def get_device(device_name):
     return response
 
 # String order should be deviceId-attributes-location-nickname-type
-# Sample url 'api.bartrug.me/post-device/"deviceId-attributes-location-nickname-type"'
+# Sample url 'api.bartrug.me/post-device/"deviceId-threshold-location-nickname-type"'
 @app.route('/post-device/<string:device_json>')
 def put_device(device_json):
     attrs = device_json.split('-')
     for x in range(0, 5-len(attrs)):
         attrs.append("null")
     deviceId = attrs[0]
-    attributes = attrs[1]
+    threshold = attrs[1]
     location = attrs[2]
     nickname = attrs[3]
     type_device = attrs[4]
-    data = {"attributes":attributes,"location":location,"nickname":nickname,"type":type_device,"currentData":"null"}
+    data = {"threshold":thseshold,"location":location,"nickname":nickname,"type":type_device,"currentData":"null"}
     db.child("devices").child(deviceId).set(data)
     response = jsonify({'deviceId':deviceId})
     response.headers.add('Access-Control-Allow-Origin', '*')
