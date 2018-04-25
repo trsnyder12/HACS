@@ -48,18 +48,23 @@ def handle_mqtt_message(client, userdata, message):
     date = datetime.datetime.now().strftime("%B%d%Y")
     event_date = re.split('(\d+)',date)
     time = datetime.datetime.now(tz).strftime("%I:%M%p")
-    data_to_firebase = {"values":data['payload']}
-    send_data_to_fb(data_to_firebase,bstring[2],event_date[1],event_date[2])
+    #data_to_firebase = {"values":data['payload']}
+    #send_data_to_fb(data['payload'],bstring[2],event_date[0],event_date[1],time)
     
 
 #helper funciton for thresholds and data
-def send_data_to_fb(data_to_firebase,device,month,day):
-	threshold = db.child("devices").child(bstring[2]).child("threshold").get()
-	new_data = data_to_firebase.split(':')
-	
-	if threshold>= new_data[1]:
-		db.child("devices").child(device).child("currentData").set(data_to_firebase)
-		db.child("events").child(device).child(month).child(day).child(time).set(data_to_firebase)
+def send_data_to_fb(firebase_data,device,month,day,time):
+    #get threshold from firebase
+    threshold = db.child("devices").child(device).child("threshold").get()
+    #get value from incoming data 'firebase_data'
+    incoming_data = re.split(':',firebase_data) 
+    #compare incoming data with threshold. if incoming is >= to threshold then allow last two lines of code.
+    if threshold < incoming_data[1]:
+        if device == "esp8266_09BADC" or device == "esp8266_6E36FB" or device == "esp8266_D88999":
+            db.child("devices").child(device).child("alarm").set("1")
+    data_to_firebase = {"values":firebase_data}
+    db.child("devices").child(device).child("currentData").set(data_to_firebase)
+    db.child("events").child(device).child(month).child(day).child(time).set(data_to_firebase)
     
 
 
@@ -158,6 +163,17 @@ def put_user_attribute(attribute_json):
     db.child("users").child(user).update({a:attributes[2]})
     response = jsonify({'userid': user,'attribute name':attributes[1],'attribute':attributes[2]})
     response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+#sample url 'api.bartrug.me/post-device-attributes/"deviceid-attribute_name-attribute_data"'
+@app.route('/post-device-attribute/<string:attribute_json>')
+def put_device_attribute(attribute_json):
+    attributes = attribute_json.split('-')
+    a = attributes[1]
+    device = attributes[0]
+    db.child("devices").child(device).update({a:attributes[2]})
+    response = jsonify({'device':device,'attribute name':attributes[1],'attribute':attributes[2]})
+    response.headers.add('Access-Control-Allow-Origin','*')
     return response
 
 # url call should be as follows 'api.bartrug.me/get-device/"devicename"'
